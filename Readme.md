@@ -1,5 +1,7 @@
 # Sonatype Nexus repository Anaconda plugin
 
+> Maintenance note: branch `backport/ale-55-parser-fix` backports the 1.6.0-line filename parser fix for hyphenated Conda package names and `.conda` artifacts on Nexus Repository 3.61 deployments.
+
 Compatibility matrix
 ---------------------------------------------
 | Plugin version | Nexus repository version | Changes                                |
@@ -14,7 +16,7 @@ Compatibility matrix
 | v1.3.0         | 3.38.1                   |                                        |
 | v1.4.0         | 3.54.1                   |                                        |
 | v1.4.1         | 3.54.1                   | Adds API routes for Conda repositories |
-| v1.6.0         | 3.61.0                   | Adds Support for ZST files             |
+| v1.6.0         | 3.61.0                   | Adds support for ZST files; backport branch fixes hyphenated package names in `.conda` filenames |
 
 ### Build
 * Clone the project
