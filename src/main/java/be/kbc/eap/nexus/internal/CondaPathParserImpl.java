@@ -51,7 +51,7 @@ public class CondaPathParserImpl
     private CondaPath.Coordinates condaPathToCoordinates(final String pathString, final boolean caseSensitive) {
         String str = pathString;
 
-        if(str.endsWith(Constants.REPODATA_JSON)) {
+        if(str.endsWith(Constants.REPODATA_JSON) || str.endsWith(Constants.REPODATA_JSON_ZST)) {
             return null;
         }
 
@@ -63,24 +63,32 @@ public class CondaPathParserImpl
         final String fileName = str.substring(vEndPos + 1);
 
         String[] parts = fileName.split("-");
+        if (parts.length < 3) {
+            return null;
+        }
 
-        String packageName = parts[0];
-        String version = "";
-        String build = "";
+        String buildAndExtension = parts[parts.length - 1];
         String extension = "";
-        if(parts.length>1) {
-            version = parts[1];
-            build = parts[2].replace(".tar.bz2", "");
+        if(buildAndExtension.endsWith(".tar.bz2")) {
+            extension = "tar.bz2";
+            buildAndExtension = buildAndExtension.replace(".tar.bz2", "");
+        }
+        else if(buildAndExtension.endsWith(".conda")) {
+            extension = "conda";
+            buildAndExtension = buildAndExtension.replace(".conda", "");
         }
 
-        int nExtPos = fileName.lastIndexOf('.');
-        if(fileName.endsWith(".tar.bz2")) {
-            nExtPos -= 4;
+        String build = buildAndExtension;
+        String version = parts[parts.length - 2];
+        StringBuilder packageName = new StringBuilder();
+        for (int i = 0; i < parts.length - 2; i++) {
+            packageName.append(parts[i]);
+            if (i < parts.length - 3) {
+                packageName.append("-");
+            }
         }
 
-        extension = fileName.substring(nExtPos + 1);
-
-        return new CondaPath.Coordinates(packageName, version, build, extension);
+        return new CondaPath.Coordinates(packageName.toString(), version, build, extension);
     }
 
 }
